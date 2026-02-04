@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Lover 💘</title>
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        body.shake {
+            animation: shake 0.25s;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(0); }
+            25% { transform: translate(-8px, 5px); }
+            50% { transform: translate(8px, -5px); }
+            75% { transform: translate(-8px, -5px); }
+            100% { transform: translate(0); }
+        }
+
+        .container {
+            text-align: justify;
+            color: white;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        button {
+            padding: 14px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;            
+        }
+
+        #yesBtn {
+            background: #ff1e56;
+            color: white;
+            margin-right: 20px;
+            margin-left: 9vw;
+        }
+
+        #noBtn {
+            background: white;
+            color: #ff1e56;
+            position: fixed;
+            touch-action: none;
+        }
+
+        .message {
+            display: none;
+            margin-top: 30px;
+            font-size: 26px;
+        }
+
+        .emoji {
+            font-size: 70px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1 id="header">Will you be my valentine? 💘</h1>
+
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No 😈</button>
+
+    <div class="message" id="message">
+        <div class="emoji">😍❤️🥰</div>
+        Thank you for being my Lover!
+        <br>
+        <br>
+        I love you valentine ❤️
+    </div>
+</div>
+
+<script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
+    const header = document.getElementById("header");
+    const body = document.body;
+
+    const ESCAPE_DISTANCE = 120; // how close cursor can get
+    const MIN_YES_DISTANCE = 180;
+
+    function shakeScreen() {
+        body.classList.add("shake");
+        setTimeout(() => body.classList.remove("shake"), 250);
+    }
+
+    function getDistance(x1, y1, x2, y2) {
+        return Math.hypot(x2 - x1, y2 - y1);
+    }
+
+    function moveNoButton() {
+        const yesRect = yesBtn.getBoundingClientRect();
+        const noRect = noBtn.getBoundingClientRect();
+
+        let x, y, d;
+
+        do {
+            x = Math.random() * (window.innerWidth - noRect.width);
+            y = Math.random() * (window.innerHeight - noRect.height);
+            d = getDistance(x, y, yesRect.left, yesRect.top);
+        } while (d < MIN_YES_DISTANCE);
+
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+
+        shakeScreen();
+    }
+
+    // Mouse proximity detection
+    document.addEventListener("mousemove", (e) => {
+        const noRect = noBtn.getBoundingClientRect();
+
+        const noCenterX = noRect.left + noRect.width / 2;
+        const noCenterY = noRect.top + noRect.height / 2;
+
+        const mouseDistance = getDistance(
+            e.clientX,
+            e.clientY,
+            noCenterX,
+            noCenterY
+        );
+
+        if (mouseDistance < ESCAPE_DISTANCE) {
+            moveNoButton();
+        }
+    });
+
+    // Mobile escape
+    noBtn.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        moveNoButton();
+    });
+
+    // YES clicked
+    yesBtn.addEventListener("click", () => {
+        yesBtn.style.display = "none";
+        noBtn.style.display = "none";
+        header.style.display = "none";
+        message.style.display = "block";
+    });
+</script>
+
+</body>
+</html>
